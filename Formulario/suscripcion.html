@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suscripción</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Formulario de Suscripción</h1>
+    <form method="post" action="suscribe.php" onsubmit="return validarFormulario()">
+      <fieldset>
+        <legend>Datos personales</legend>
+        <p>
+          <label for="nombre">Nombre: </label>
+          <input type="text" name="nombre" id="nombre" required pattern="[A-Za-z\s]+" onkeyup="mayusculasNombre()"/>
+          <span class="error"></span>
+        </p>
+        <p>
+          <label for="dni">DNI: </label>
+          <input type="text" name="dni" id="dni" pattern="[0-9]{8}-[A-Z]" required />
+          <span class="error"></span>
+        </p>
+      </fieldset>
+      <fieldset>
+        <legend>Tipo de Suscripción</legend>
+        <span class="error"></span>
+        <input type="radio" name="tipo" id="basico" value="basico" checked required />
+        <label for="basico">Básico</label>
+        <input type="radio" name="tipo" id="estandar" value="estandar" required />
+        <label for="estandar">Estándar</label>
+        <input type="radio" name="tipo" id="premium" value="premium" required />
+        <label for="premium">Premium</label>
+        <input type="radio" name="tipo" id="elite" value="elite" required />
+        <label for="elite">Élite</label>
+      </fieldset>
+      <fieldset>
+        <legend>Temas</legend>
+        <div id="temas"></div>
+        <span class="error" id="errortemas"></span>
+      </fieldset>
+      <p>
+        <input type="reset" value="Borrar" />
+        <input type="submit" value="Suscribir" />
+      </p>
+    </form>
+    <script>
+        function mayusculasNombre(){
+            var nombre = document.getElementById("nombre");
+            nombre.value = nombre.value.toUpperCase();
+        }
+      function actualizartemas() {
+        var temasDiv = document.getElementById("temas");
+        temasDiv.innerHTML = "";
+
+        var temasSeleccionados = 0;
+
+        temas.forEach(function (tema) {
+          var checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = "temas";
+          checkbox.value = tema;
+          checkbox.checked = true; // Por defecto, todos los temas están marcados
+
+          checkbox.addEventListener("change", function () {
+            temasSeleccionados = document.querySelectorAll('input[name="temas"]:checked').length;
+            validarTemas(temasSeleccionados);
+          });
+
+          var label = document.createElement("label");
+          label.appendChild(checkbox);
+          label.appendChild(document.createTextNode(tema));
+
+          temasDiv.appendChild(label);
+        });
+
+        validarTemas(temasSeleccionados);
+      }
+
+      function validarTemas(temasSeleccionados) {
+        var tipoSuscripcionSelect = document.querySelector('input[name="tipo"]:checked');
+        var mensajeError = "";
+
+        switch (tipoSuscripcionSelect.value) {
+          case "basico":
+            if (temasSeleccionados !== 1) {
+              mensajeError = "Para la suscripción básica, debe seleccionar exactamente 1 tema.";
+            }
+            break;
+          case "estandar":
+            if (temasSeleccionados !== 3) {
+              mensajeError = "Para la suscripción estándar, debe seleccionar exactamente 3 temas.";
+            }
+            break;
+          case "premium":
+            if (temasSeleccionados !== 6) {
+              mensajeError = "Para la suscripción premium, debe seleccionar exactamente 6 temas.";
+            }
+            break;
+          case "elite":
+            // No se aplica validación ya que todos los temas están marcados por defecto
+            break;
+        }
+
+        var errorSpan = document.getElementById("errortemas");
+        if (mensajeError) {
+          errorSpan.innerText = mensajeError;
+        } else {
+          errorSpan.innerText = "";
+        }
+
+        return mensajeError === "";
+      }
+
+      function validarFormulario() {
+        var temasSeleccionados = document.querySelectorAll('input[name="temas"]:checked').length;
+        return validarTemas(temasSeleccionados);
+      }
+
+      // Inicializar temas y actualizar el formulario
+      const temas = [
+        "Cocina",
+        "Futbol",
+        "Salud",
+        "Arte",
+        "Sucesos",
+        "Política",
+        "Economía",
+        "Música",
+        "Cine",
+        "Baloncesto",
+        "Javascript",
+        "Vinos",
+        "Papiroflexia",
+      ];
+      actualizartemas();
+    </script>
+  </body>
+</html>
